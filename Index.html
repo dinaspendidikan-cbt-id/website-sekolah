@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Resmi Sekolah</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f6f9; }
+    .container { max-width: 1000px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .hero { background: #0056b3; color: white; padding: 40px 20px; border-radius: 8px; text-align: center; margin-bottom: 30px; }
+    .hero h1 { margin: 0 0 10px 0; font-size: 2.2em; }
+    .card { background: #f9f9f9; border-left: 5px solid #0056b3; padding: 15px 20px; margin-bottom: 20px; border-radius: 4px; }
+    .section-title { border-bottom: 2px solid #0056b3; padding-bottom: 8px; margin-top: 40px; color: #0056b3; }
+    .guru-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+    .guru-card { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; text-align: center; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .guru-card img { width: 100%; height: 180px; object-fit: cover; }
+    .guru-card div { padding: 10px; }
+    .guru-card h4 { margin: 5px 0; color: #0056b3; }
+    .guru-card p { margin: 3px 0; font-size: 0.9em; color: #666; }
+    .loading { text-align: center; font-size: 1.2em; padding: 50px; color: #666; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="loading" class="loading">Memuat data sekolah...</div>
+  
+  <div id="content" style="display: none;">
+    <!-- Banner Header -->
+    <div class="hero">
+      <h1 id="nama-sekolah">-</h1>
+      <p id="alamat-sekolah">-</p>
+    </div>
+
+    <!-- Sambutan & Visi Misi -->
+    <div class="card">
+      <h3>Sambutan Kepala Sekolah</h3>
+      <p id="sambutan">-</p>
+    </div>
+
+    <div class="card">
+      <h3>Visi & Misi</h3>
+      <p id="visi">-</p>
+    </div>
+
+    <!-- Daftar Guru -->
+    <h2 class="section-title">Data Guru & Staf Pengajar</h2>
+    <div id="guru-container" class="guru-grid"></div>
+
+    <!-- Kontak -->
+    <h2 class="section-title">Kontak Kami</h2>
+    <div class="card">
+      <p><strong>Telepon:</strong> <span id="telepon">-</span></p>
+      <p><strong>Email:</strong> <span id="email">-</span></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // GANTI DENGAN URL WEB APP APPS SCRIPT ANDA
+  const API_URL = "URL_WEB_APP_APPS_SCRIPT_ANDA_DI_SINI";
+
+  fetch(API_URL)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('nama-sekolah').innerText = data.sekolah.nama_sekolah || '';
+      document.getElementById('alamat-sekolah').innerText = data.sekolah.alamat || '';
+      document.getElementById('sambutan').innerText = data.sekolah.sambutan_kepsek || '';
+      document.getElementById('visi').innerText = data.sekolah.visi || '';
+      document.getElementById('telepon').innerText = data.sekolah.telepon || '';
+      document.getElementById('email').innerText = data.sekolah.email || '';
+
+      const guruContainer = document.getElementById('guru-container');
+      guruContainer.innerHTML = '';
+      
+      data.guru.forEach(guru => {
+        const card = document.createElement('div');
+        card.className = 'guru-card';
+        card.innerHTML = `
+          <img src="${guru.foto || 'https://via.placeholder.com/150'}" alt="${guru.nama}">
+          <div>
+            <h4>${guru.nama}</h4>
+            <p><strong>NIP:</strong> ${guru.nip}</p>
+            <p><strong>Mapel:</strong> ${guru.mapel}</p>
+            <p><em>${guru.jabatan}</em></p>
+          </div>
+        `;
+        guruContainer.appendChild(card);
+      });
+
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+      document.getElementById('loading').innerText = 'Gagal memuat data sekolah.';
+    });
+</script>
+
+</body>
+</html>
